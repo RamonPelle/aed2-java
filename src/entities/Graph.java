@@ -50,7 +50,7 @@ public class Graph<TYPE> {
 	}
 
 	public void bfs(int starter, Graph<TYPE> graph) {
-		if (starter < getGraphSize(graph)) {
+		try {
 			ArrayList<Vertex<TYPE>> checked = new ArrayList<Vertex<TYPE>>();
 			ArrayList<Vertex<TYPE>> queue = new ArrayList<Vertex<TYPE>>();
 
@@ -59,10 +59,11 @@ public class Graph<TYPE> {
 			System.out.println(actual.getData());
 			queue.add(actual);
 
+			int queueIndex = 0;
 			while (queue.size() > 0) {
-				Vertex<TYPE> visited = queue.get(starter);
-
-				for (int i = 0; i < visited.getEdgesOut().size(); i++) {
+			
+				Vertex<TYPE> visited = queue.get(queueIndex);
+				for (int i = 0; i < visited.getEdgesOut().size(); i++) {	
 					Vertex<TYPE> next = visited.getEdgesOut().get(i).getEnd(); // final da aresta
 					if (!checked.contains(next)) { // se o next ainda nao foi visitado
 						checked.add(next);
@@ -70,11 +71,20 @@ public class Graph<TYPE> {
 						queue.add(next);
 					}
 				} // passei por todas as arestas do vertice
-
-				queue.remove(starter);
+				
+				//faz a verificacao pra nao dar IndexOutOfBounds ex << tentar entender
+				if (queueIndex == queue.size() - 1) {
+				    queue.remove(queueIndex);
+				    queueIndex = 0;
+				  } else {
+				    queue.remove(queueIndex);
+				    queueIndex++;
+				  }
 			}
-		}else {
-			System.out.println("Try again, entering an existing graph number.");
+		} catch (Exception e) {
+			System.out.println("starter index data: " + this.vertexes.get(starter).getData());
+			System.out.println(e);
 		}
+
 	}
 }

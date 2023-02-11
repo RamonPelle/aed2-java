@@ -33,7 +33,7 @@ public class week1_graphs {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("From witch node do you want to start the BFS?");
 		graph.bfs(sc.nextInt(), graph);
-
+		
 		// System.out.println(graph.getGraphSize(graph));
 
 		sc.close();

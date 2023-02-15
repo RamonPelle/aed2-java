@@ -2,7 +2,8 @@ package entities;
 
 import java.util.ArrayList;
 
-public class Vertex<TYPE> {
+
+public class Vertex<TYPE>{
 	private TYPE data;
 	private ArrayList<Edge<TYPE>> edgesIn;
 	private ArrayList<Edge<TYPE>> edgesOut;
@@ -13,6 +14,8 @@ public class Vertex<TYPE> {
 		this.edgesOut = new ArrayList<Edge<TYPE>>();
 	}
 
+	
+	
 	public TYPE getData() {
 		return data;
 	}

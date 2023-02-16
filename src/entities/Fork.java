@@ -14,12 +14,15 @@ public class Fork<TYPE> {
 		this.edges = new ArrayList<Edge<TYPE>>();
 	}
 
-	public void addVertex(TYPE data) {
+	public boolean addVertex(TYPE data) {
 		if (this.vertexes.size() < 20) {
 			Vertex<TYPE> newVertex = new Vertex<TYPE>(data);
 			this.vertexes.add(newVertex);
+			 System.out.println("Sucessfully added.");
+			return true;
 		} else {
 			System.out.println("You cannot add any other vertices to this fork. Maximum: 20.");
+			return false;
 		}
 
 	}
@@ -28,6 +31,11 @@ public class Fork<TYPE> {
 
 		if (dataBegin == null || dataEnd == null) {
 			System.out.println("One of the vertexes does not exist.");
+			return false;
+		}
+		
+		if(weigth < 0) {
+			System.out.println("The edge's weigth is smaller than 0. Try again with a valid number");
 			return false;
 		}
 
@@ -46,7 +54,7 @@ public class Fork<TYPE> {
 		begin.addEdgeOut(edge);
 		end.addEdgeIn(edge);
 		this.edges.add(edge);
-
+		System.out.println("Sucessfully added.");
 		return true;
 	}
 
@@ -115,7 +123,7 @@ public class Fork<TYPE> {
 	
 	
 
-	public boolean isVertex(String name) {
+	public boolean isVertex(String name) {		
 		for (int i = 0; i < vertexes.size(); i++) {
 			if (vertexes.get(i).getData().equals(name)) {
 				return true;

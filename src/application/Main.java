@@ -1,34 +1,27 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import entities.Fork;
-import entities.Utilities;
+import entities.Vertex;
 
-public class Week1_forks {
+public class Main {
 
 	public static void main(String[] args) {
-		/*
-		 * TODO: 1. Permitir o armazenamento de até 20 vértices: OK
-		 * 
-		 * 2. Fazer a leitura dos pesos das arestas de cada vértice: OK
-		 * 
-		 * 3. Considerar sempre vértices positivos: OK
-		 * 
-		 * 4. Mostrar os dados armazenados: OK
-		 */
 
 		Scanner sc = new Scanner(System.in);
 		String dataVertex, origin, destiny;
 		int dataEdge;
 		Fork<String> fork = new Fork<String>();
-
+		
 		loop: while (1 > 0) {
-			System.out.println("----- O QUE VOCÊ QUER FAZER -----");
-			System.out.println("1 - Adicionar vértice");
-			System.out.println("2 - Adicionar aresta");
-			System.out.println("3 - Buscar (BFS)");
-			System.out.println("4 - Sair");
+			System.out.println("----- What do you want to do -----");
+			System.out.println("1 - Add vertex");
+			System.out.println("2 - Add edge");
+			System.out.println("3 - BFS");
+			System.out.println("4 - Dijkstra");
+			System.out.println("5 - Exit");
 			int flag = sc.nextInt();
 			switch (flag) {
 			case 1: {
@@ -83,7 +76,31 @@ public class Week1_forks {
 				System.out.println("Closing");
 				break loop;
 			}
+			case 5: {
+				// Utilities.cleanConsole();
+				sc.nextLine();
+				System.out.println();
+				System.out.println("Enter the origin and destiny vertices: ");
+				System.out.printf("- Origin: ");
+				origin = sc.nextLine();
+				System.out.printf("- Destiny: ");
+				destiny = sc.nextLine();
 
+				ArrayList<Vertex<String>> shortestPath = fork.dijkstra(origin, destiny);
+				
+				if (shortestPath == null) {
+					System.out.println("No path found between the given vertices.");
+				} else {
+					System.out.printf("Shortest path between %s and %s: ", origin, destiny);
+					for (Vertex<String> vertex : shortestPath) {
+						System.out.printf("%s ", vertex.getData());
+					}
+					System.out.println();
+				}
+
+				System.out.println();
+				break;
+			}
 			default:
 				System.out.println("Unexpected input, try again.");
 				break;

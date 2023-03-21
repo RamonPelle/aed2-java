@@ -3,6 +3,7 @@ package application;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import entities.Edge;
 import entities.Fork;
 import entities.Vertex;
 
@@ -21,7 +22,8 @@ public class Main {
 			System.out.println("2 - Add edge");
 			System.out.println("3 - BFS");
 			System.out.println("4 - Dijkstra");
-			System.out.println("5 - Exit");
+			System.out.println("5 - Kruskal");
+			System.out.println("6 - Exit");
 			int flag = sc.nextInt();
 			switch (flag) {
 			case 1: {
@@ -72,12 +74,6 @@ public class Main {
 			}
 			case 4: {
 				// Utilities.cleanConsole();
-				System.out.println();
-				System.out.println("Closing");
-				break loop;
-			}
-			case 5: {
-				// Utilities.cleanConsole();
 				sc.nextLine();
 				System.out.println();
 				System.out.println("Enter the origin and destiny vertices: ");
@@ -100,6 +96,21 @@ public class Main {
 
 				System.out.println();
 				break;
+			}
+			case 5: {
+				Fork<String> kruskalMST = fork.kruskal(fork);
+				ArrayList<Edge<String>> edges = kruskalMST.getAllEdges();
+
+				System.out.println("Minimum Spanning Tree:");
+				for (Edge<String> edge : edges) {
+				    System.out.println(edge.getBegin().getData() + " - " + edge.getEnd().getData() + " (" + edge.getWeight() + ")");
+				}
+			}
+			case 6:{
+				// Utilities.cleanConsole();
+				System.out.println();
+				System.out.println("Closing");
+				break loop;
 			}
 			default:
 				System.out.println("Unexpected input, try again.");

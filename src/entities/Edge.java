@@ -11,7 +11,7 @@ public class Edge<TYPE> {
 		this.end = end;
 	}
 	
-	public int getWeigth() {
+	public int getWeight() {
 		return weight;
 	}
 	public void setWeigth(int weight) {

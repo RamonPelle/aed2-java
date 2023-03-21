@@ -1,4 +1,4 @@
-package entities;
+package utilities;
 
 public class Utilities {
 	//TODO cleanConsole not working :C try jansi library to do it later.

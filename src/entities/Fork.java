@@ -1,6 +1,9 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,15 +31,15 @@ public class Fork<TYPE> {
 
 	}
 
-	public boolean addEdge(int weigth, TYPE dataBegin, TYPE dataEnd) {
+	public boolean addEdge(int weight, TYPE dataBegin, TYPE dataEnd) {
 
 		if (dataBegin == null || dataEnd == null) {
 			System.out.println("One of the vertexes does not exist.");
 			return false;
 		}
 
-		if (weigth < 0) {
-			System.out.println("The edge's weigth is smaller than 0. Try again with a valid number");
+		if (weight < 0) {
+			System.out.println("The edge's weight is smaller than 0. Try again with a valid number");
 			return false;
 		}
 
@@ -51,7 +54,7 @@ public class Fork<TYPE> {
 			}
 		}
 
-		Edge<TYPE> edge = new Edge<TYPE>(weigth, begin, end);
+		Edge<TYPE> edge = new Edge<TYPE>(weight, begin, end);
 		begin.addEdgeOut(edge);
 		end.addEdgeIn(edge);
 		this.edges.add(edge);
@@ -115,7 +118,7 @@ public class Fork<TYPE> {
 		System.out.print("Edges for vertex " + visited.getData() + ": ");
 
 		for (Edge<TYPE> edge : visited.getEdgesOut()) {
-			System.out.print("[" + edge.getEnd().getData() + ", " + edge.getWeigth() + "]");
+			System.out.print("[" + edge.getEnd().getData() + ", " + edge.getWeight() + "]");
 		}
 
 		System.out.println();
@@ -129,66 +132,115 @@ public class Fork<TYPE> {
 		}
 		return false;
 	}
-	
-	//DIJKSTRA
-	public ArrayList<Vertex<TYPE>> dijkstra(TYPE dataBegin, TYPE dataEnd) {
-	    Vertex<TYPE> begin = this.getVertex(dataBegin);
-	    Vertex<TYPE> end = this.getVertex(dataEnd);
 
-	    
-	    List<Vertex<TYPE>> unvisited = new ArrayList<Vertex<TYPE>>();
-	    for (Vertex<TYPE> vertex : this.vertexes) {
-	        vertex.setDistance(Integer.MAX_VALUE);
-	        vertex.setPrevious(null);
-	        unvisited.add(vertex);
-	    }
-	    begin.setDistance(0);
-
-	    
-	    while (!unvisited.isEmpty()) {
-	        Vertex<TYPE> current = null;
-	        int minDistance = Integer.MAX_VALUE;
-
-	        for (Vertex<TYPE> vertex : unvisited) {
-	            if (vertex.getDistance() < minDistance) {
-	                minDistance = (int) vertex.getDistance();
-	                current = vertex;
-	            }
-	        }
-
-	        
-	        if (current == end) {
-	            break;
-	        }
-
-	        unvisited.remove(current);
-
-	        
-	        for (Edge<TYPE> edge : current.getEdgesOut()) {
-	            Vertex<TYPE> neighbor = edge.getEnd();
-	            int distanceThroughCurrent = (int) (current.getDistance() + edge.getWeigth());
-	            if (distanceThroughCurrent < neighbor.getDistance()) {
-	                neighbor.setDistance(distanceThroughCurrent);
-	                neighbor.setPrevious(current);
-	            }
-	        }
-	    }
-
-	    
-	    ArrayList<Vertex<TYPE>> path = new ArrayList<Vertex<TYPE>>();
-	    Vertex<TYPE> current = end;
-	    while (current != null) {
-	        path.add(0, current);
-	        current = current.getPrevious();
-	    }
-
-	    
-	    if (path.isEmpty() || path.get(0) != begin) {
-	        return null;
-	    }
-
-	    return path;
+	public ArrayList<Edge<TYPE>> getAllEdges() {
+		return edges;
 	}
 
+	public ArrayList<Vertex<TYPE>> getAllVertexes() {
+		return vertexes;
+	}
+
+	// DIJKSTRA
+	public ArrayList<Vertex<TYPE>> dijkstra(TYPE dataBegin, TYPE dataEnd) {
+		Vertex<TYPE> begin = this.getVertex(dataBegin);
+		Vertex<TYPE> end = this.getVertex(dataEnd);
+
+		List<Vertex<TYPE>> unvisited = new ArrayList<Vertex<TYPE>>();
+		for (Vertex<TYPE> vertex : this.vertexes) {
+			vertex.setDistance(Integer.MAX_VALUE);
+			vertex.setPrevious(null);
+			unvisited.add(vertex);
+		}
+		begin.setDistance(0);
+
+		while (!unvisited.isEmpty()) {
+			Vertex<TYPE> current = null;
+			int minDistance = Integer.MAX_VALUE;
+
+			for (Vertex<TYPE> vertex : unvisited) {
+				if (vertex.getDistance() < minDistance) {
+					minDistance = (int) vertex.getDistance();
+					current = vertex;
+				}
+			}
+
+			if (current == end) {
+				break;
+			}
+
+			unvisited.remove(current);
+
+			for (Edge<TYPE> edge : current.getEdgesOut()) {
+				Vertex<TYPE> neighbor = edge.getEnd();
+				int distanceThroughCurrent = (int) (current.getDistance() + edge.getWeight());
+				if (distanceThroughCurrent < neighbor.getDistance()) {
+					neighbor.setDistance(distanceThroughCurrent);
+					neighbor.setPrevious(current);
+				}
+			}
+		}
+
+		ArrayList<Vertex<TYPE>> path = new ArrayList<Vertex<TYPE>>();
+		Vertex<TYPE> current = end;
+		while (current != null) {
+			path.add(0, current);
+			current = current.getPrevious();
+		}
+
+		if (path.isEmpty() || path.get(0) != begin) {
+			return null;
+		}
+
+		return path;
+	}
+
+	// KRUSKAL
+	public Fork<TYPE> kruskal(Fork<TYPE> fork) {
+	    // Create a new fork to hold the MST
+	    Fork<TYPE> mst = new Fork<TYPE>();
+
+	    // Create a list of all edges in the graph
+	    ArrayList<Edge<TYPE>> edges = fork.getAllEdges();
+
+	    // Sort the edges by weight, in increasing order
+	    Collections.sort(edges, new Comparator<Edge<TYPE>>() {
+	        public int compare(Edge<TYPE> e1, Edge<TYPE> e2) {
+	            return e1.getWeight() - e2.getWeight();
+	        }
+	    });
+
+	    // Create a set for each vertex
+	    HashMap<TYPE, HashSet<TYPE>> sets = new HashMap<TYPE, HashSet<TYPE>>();
+	    for (Vertex<TYPE> vertex : fork.getAllVertexes()) {
+	        HashSet<TYPE> set = new HashSet<TYPE>();
+	        set.add(vertex.getData());
+	        sets.put(vertex.getData(), set);
+	        mst.addVertex(vertex.getData());
+	    }
+
+	    // Iterate over all edges, adding those that don't form a cycle to the MST
+	    for (Edge<TYPE> edge : edges) {
+	        TYPE begin = edge.getBegin().getData();
+	        TYPE end = edge.getEnd().getData();
+
+	        // Check if begin and end are in different sets
+	        HashSet<TYPE> beginSet = sets.get(begin);
+	        HashSet<TYPE> endSet = sets.get(end);
+
+	        if (!beginSet.equals(endSet)) {
+	            // Combine the sets
+	            beginSet.addAll(endSet);
+	            for (TYPE vertex : endSet) {
+	                sets.put(vertex, beginSet);
+	            }
+
+	            // Add the edge to the MST
+	            mst.addEdge(edge.getWeight(), begin, end);
+	        }
+	    }
+
+	    return mst;
+	}
 
 }

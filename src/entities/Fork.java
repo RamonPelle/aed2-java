@@ -197,20 +197,20 @@ public class Fork<TYPE> {
 
 	// KRUSKAL
 	public Fork<TYPE> kruskal(Fork<TYPE> fork) {
-	    // Create a new fork to hold the MST
+	    // Criando a MST vazia
 	    Fork<TYPE> mst = new Fork<TYPE>();
 
-	    // Create a list of all edges in the graph
+	    // Listando todas as arestas
 	    ArrayList<Edge<TYPE>> edges = fork.getAllEdges();
 
-	    // Sort the edges by weight, in increasing order
+	    // Ordenar de forma crescente
 	    Collections.sort(edges, new Comparator<Edge<TYPE>>() {
 	        public int compare(Edge<TYPE> e1, Edge<TYPE> e2) {
 	            return e1.getWeight() - e2.getWeight();
 	        }
 	    });
 
-	    // Create a set for each vertex
+	    // Cria um set para cada vertice e adciona na MST
 	    HashMap<TYPE, HashSet<TYPE>> sets = new HashMap<TYPE, HashSet<TYPE>>();
 	    for (Vertex<TYPE> vertex : fork.getAllVertexes()) {
 	        HashSet<TYPE> set = new HashSet<TYPE>();
@@ -219,23 +219,21 @@ public class Fork<TYPE> {
 	        mst.addVertex(vertex.getData());
 	    }
 
-	    // Iterate over all edges, adding those that don't form a cycle to the MST
+	    // Adiciona só as arestas que nao formam ciclo
 	    for (Edge<TYPE> edge : edges) {
 	        TYPE begin = edge.getBegin().getData();
 	        TYPE end = edge.getEnd().getData();
 
-	        // Check if begin and end are in different sets
+	        // Verifica se begin e end estão em sets diferentes
 	        HashSet<TYPE> beginSet = sets.get(begin);
 	        HashSet<TYPE> endSet = sets.get(end);
 
 	        if (!beginSet.equals(endSet)) {
-	            // Combine the sets
 	            beginSet.addAll(endSet);
 	            for (TYPE vertex : endSet) {
 	                sets.put(vertex, beginSet);
 	            }
-
-	            // Add the edge to the MST
+	            // Aprovado, adicionar na MST
 	            mst.addEdge(edge.getWeight(), begin, end);
 	        }
 	    }
